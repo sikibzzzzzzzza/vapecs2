@@ -1,1 +1,80 @@
+{
+  "version": 2,
+  "note": "2026-09-02: fix add_nametag_entity (broken), set_dynamic_attr_value (ambiguous→float-only), sky_state_changed_thunk (ambiguous→unique)",
+  "generated": "2026-09-02",
+  "schema": {
+    "version": "int — increment on each publish so cache invalidation is obvious",
+    "note":    "human-readable summary of what changed",
+    "patterns":"map of key → IDA-style byte pattern ('?' = wildcard)",
+    "ints":    "map of key → integer (vtable indices, small offsets)"
+  },
 
+  "patterns": {
+    "client.frame_stage_notify":            "48 89 5C 24 ? 48 89 6C 24 ? 57 48 83 EC ? 48 8B F9 33 ED",
+    "client.set_camera_view":               "40 57 48 83 EC ? 48 8B FA E8 ? ? ? ? BA",
+    "client.fire_event_client_side":        "40 53 41 54 41 56 48 83 EC ? 4C 8B F2",
+    "client.level_init":                    "48 89 74 24 ? 57 48 83 EC ? 48 8B 0D ? ? ? ? 48 8B FA",
+    "client.match_found":                   "48 83 EC ? 48 8B 0D ? ? ? ? 48 85 C9 74 ? ? ? ? 48 89 7C 24",
+    "client.panorama_event":                "40 56 57 41 57 48 83 EC ? 48 8B 3D ? ? ? ? 4D 85 C0",
+
+    "client.event.get_name":                "8B 41 14 0F BA E0 1E 73 05 48 8D 41 18 C3",
+    "client.event.get_string":              "48 83 EC 38 8B 02 48 83 C1 58 89 44 24 20 8B 42 04 89 44 24 24 48 8B 42 08 48 8D 54 24 20 48 89 44 24 28 E8 ? ? ? ? 48 83 C4 38 C3 CC CC CC 33 C9",
+    "client.event.set_string":              "48 83 EC 38 8B 02 48 83 C1 58 89 44 24 20 41 B1 1A",
+    "client.event.get_player_controller":   "48 83 EC 38 8B 02 4C 8D 44 24 20",
+    "client.event.get_int":                 "48 83 EC 38 8B 02 48 83 C1 58 89 44 24 20 8B 42 04 89 44 24 24 48 8B 42 08 48 8D 54 24 20 48 89 44 24 28 E8 ? ? ? ? 48 83 C4 38 C3 CC CC CC B8 04 00 00 00 C3",
+
+    "client.composite_wrapper":             "48 89 5C 24 08 57 48 83 EC 20 8B DA 48 8B F9 E8 ? ? ? ? F6 C3 01 74 16 48 8B CF E8 ? ? ? ? C6 87 91 16 00 00 00 C6 87 B8 16 00 00 01",
+    "client.update_composite_material":     "48 89 5C 24 10 48 89 6C 24 18 48 89 74 24 20 57 41 56 41 57 48 83 EC 20 44 0F B6 F2 48 8B F9",
+    "client.update_skin":                   "40 55 53 41 57 48 8D AC 24 00 FE FF FF 48 81 EC 00 03 00 00 44 0F B6 FA 48 8B D9",
+    "client.set_iv_attr_by_name":           "40 53 48 83 EC 20 48 8B D9 48 81 C1 08 02 00 00 E8",
+    "client.regen_weapon_skins":            "48 83 EC 48 E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 48 8B 10 48 8B C8 48 89 5C 24 40 FF 52 28",
+    "client.regenerate_skins":              "48 83 EC ? E8 ? ? ? ? 48 85 C0 0F 84 ? ? ? ? 48 8B 10",
+
+    "client.update_subclass":               "4C 8B DC 53 48 81 EC ?? ?? ?? ?? 48 8B 41",
+    "client.set_model":                     "40 53 48 83 EC ? 48 8B D9 4C 8B C2 48 8B 0D ? ? ? ? 48 8D 54 24",
+    "client.set_mesh_group_mask":           "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8D 99 ? ? ? ? 48 8B 71",
+    "client.calc_world_space_bones":        "48 89 4C 24 ? 55 53 56 57 41 54 41 55 41 56 41 57 B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8D 6C 24 ? 48 8B 81",
+    "client.get_hitbox_set":                "48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 8B DA 48 8B F9 E8 ? ? ? ? 48 8B F0 48 85 C0 0F 84",
+    "client.construct_paint_kit":           "48 89 5C 24 ? 56 48 83 EC ? 48 8B 01 FF 50",
+    "client.add_stattrak_entity":           "48 8B C4 48 89 58 08 48 89 70 10 57 48 83 EC 50 33 F6 8B FA",
+    "client.add_nametag_entity":            "40 55 53 41 56 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B DA",
+    "client.rebuild_animgraph":             "40 55 57 48 83 EC ? 4C 89 74 24",
+    "client.get_spread":                    "48 83 EC ? 48 63 91",
+    "client.get_inaccuracy":                "48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 44 0F 29 84 24",
+    "client.physics_run_think":             "48 89 5C 24 ? 57 48 81 EC ? ? ? ? 48 8B 01 48 8B F9 FF 90 ? ? ? ? 83 BF",
+
+    "client.find_hud_element":              "40 53 48 83 EC ? 48 8B 05 ? ? ? ? 48 8B D9 48 85 C0 74 ? 48 89 5C 24",
+    "client.clear_hud_weapon_icon_call":    "E8 ? ? ? ? 8B F8 C6 84 24",
+
+    "client.inv_manager_get_instance":      "48 8D 05 ?? ?? ?? ?? C3 CC CC CC CC CC CC CC CC 8B 91 ?? ?? ?? ?? B8",
+    "client.create_base_type_cache":        "40 57 48 83 EC 20 4C 8B 49 18 44 8B D2 4C 63 41 10",
+    "client.create_so_subclass_econ":       "48 83 EC 28 B9 48 00 00 00 E8 ? ? ? ? 48 85",
+    "client.set_dynamic_attr_value":        "48 89 6C 24 ? 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B FA C7 44 24 ? ? ? ? ? 4D 8B F8 4C 8D 0D ? ? ? ? 48 8B E9 4C 8D 05 ? ? ? ? 33 D2 48 8B 4F ? E8 ? ? ? ? 4C 8B F0 48 85 C0 0F 84 ? ? ? ? 48 8B 55 ? 48 89 9C 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 89 B4 24 ? ? ? ? 48 85 D2 74 ? 0F B7 4A ? 48 8D 5A ? 0F B6 F1 48 C1 E6 ? 48 03 F3 48 3B DE 73 ? 90 48 8B 07 48 8B CF FF 10 66 39 03 74 ? 48 83 C3 ? 48 3B DE 72 ? EB ? 48 85 DB 75 ? 48 8B CD E8 ? ? ? ? 48 8B 17",
+    "client.add_econ_item_to_inv":          "48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 54 41 56 41 57 48 83 EC ? 48 8B F9 45 0F B6 F1",
+
+    "client.create_trace":                  "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 56 41 57 48 83 EC ? ? ? ? ? 4D 8D 71",
+    "client.init_trace_data":               "48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8D 79 ? 33 F6 C7 47",
+
+    "client.sky_state_changed_thunk":       "48 8B 89 38 03 00 00 48 85 C9 0F 85 ?? ?? ?? ?? C3 CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 40 53",
+    "client.set_player_ready":              "40 53 48 83 EC ? 48 8B DA 48 8D 15 ? ? ? ? 48 8B CB FF 15",
+    "client.set_type_kv3":                  "40 53 48 83 EC ? 80 FA",
+    "client.globalvars.init-stash-rdx":     "48 89 15 ? ? ? ? 48 89 42",
+
+    "client.csgo_input.helper_a":           "4C 8B C1 85 D2 74 ? 48 8D 05",
+    "client.csgo_input.helper_b":           "85 D2 75 ? 48 63 81",
+
+    "client.entity_system.get_base_entity": "4C 8D 49 ? 81 FA",
+    "client.entity_system.helper_a":        "48 83 EC ? 83 F9 ? 75 ? 48 8B 0D ? ? ? ? 48 8D 54 24 ? 48 8B 01 FF 90 ? ? ? ? 8B 08 48 63 C1 4C 8D 05",
+    "client.entity_system.helper_b":        "48 83 EC ? 83 F9 ? 75 ? 48 8B 0D ? ? ? ? 48 8D 54 24 ? 48 8B 01 FF 90 ? ? ? ? 8B 08 48 63 C1 48 8D 0D ? ? ? ? 48 8B 04 C1 48 83 C4 ? C3 CC CC CC CC CC CC CC CC CC CC CC CC CC 48 83 EC ? 83 F9",
+
+    "engine2.engine_client_singleton":      "48 8B 05 ? ? ? ? 48 85 C0 74 ? 80 B8 ? ? ? ? 00 75 ? 83 B8 ? ? ? ? ? 7C ?",
+    "engine2.execute_client_cmd":           "40 55 53 56 48 8D AC 24 50 FA FF FF 48 81 EC B0 06 00 00 48 8B D9 48 8B F2 48 8B 4A 48",
+
+    "scenesystem.draw_object":              "48 8B C4 53 57 41 54",
+
+    "matsys.create_material":               "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 41 56 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 8B F2"
+  },
+
+  "ints": {
+  }
+}
